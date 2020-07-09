@@ -1,0 +1,26 @@
+---
+- name: Download and Installation of Metric Beat
+  hosts: webservers
+  become: yes
+  tasks:
+  - name: Metric Beat Download
+    command: curl -L -O  https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb
+
+  - name: Metric Beat Installation
+    command: dpkg -i metricbeat-7.4.0-amd64.deb
+
+  - name: Metric Beat Copy Over
+    copy: 
+      src: /etc/ansible/files/metricbeat-config.yml
+      dest: /etc/metricbeat/metricbeat.yml
+      mode: '0644'
+
+  - name: Metric Beat Enable
+    command: metricbeat modules enable system
+
+  - name: Metric Beat Setup
+    command: metricbeat setup
+
+  - name: Metric Beat Start
+    command: service metricbeat start
+
